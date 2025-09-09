@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button registerButtonR, loginButtonR;
     EditText nameInputR, passwordInputR;
+    DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +35,7 @@ public class MainActivity extends AppCompatActivity {
         passwordInputR = findViewById(R.id.passwordInputR);
         registerButtonR = findViewById(R.id.registerButtonR);
         loginButtonR = findViewById(R.id.loginButtonR);
-
-        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+        dbHelper = new DBHelper(this);
 
         registerButtonR.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,19 +44,28 @@ public class MainActivity extends AppCompatActivity {
                 String passwordTyped = passwordInputR.getText().toString();
                 String passwordHash = CryptoHelper.hashPassword(passwordTyped);
 
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putString("name", name);
-                editor.putString("passwordHash", passwordHash);
-                editor.apply();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
+                if (!dbHelper.userExists(name)) {
+                    boolean success = dbHelper.insertUser(name, passwordHash);
+                    if (success) {
+                        Toast.makeText(MainActivity.this, "User registered successfully", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                        intent.putExtra("name", name);
+                        intent.putExtra("passwordHash", passwordHash);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(MainActivity.this, "Error registering user!", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "User already exists!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         loginButtonR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+//                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                 startActivity(intent);
             }
         });

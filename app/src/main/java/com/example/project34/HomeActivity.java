@@ -1,6 +1,9 @@
 package com.example.project34;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +12,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class HomeActivity extends AppCompatActivity {
+
+    TextView usernameDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,5 +25,19 @@ public class HomeActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+
+        if (!prefs.getBoolean("loggedIn", false)) {
+            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+        usernameDisplay = findViewById(R.id.usernameDisplay);
+
+        Intent intent = getIntent();
+        String username = intent.getStringExtra("username");
+
+        usernameDisplay.setText(username);
     }
 }

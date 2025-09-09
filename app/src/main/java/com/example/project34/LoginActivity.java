@@ -20,6 +20,7 @@ public class LoginActivity extends AppCompatActivity {
 
     Button loginButtonL, registerButtonL;
     EditText nameInputL, passwordInputL;
+    DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         passwordInputL = findViewById(R.id.passwordInputL);
         loginButtonL = findViewById(R.id.loginButtonL);
         registerButtonL = findViewById(R.id.registerButtonL);
+        dbHelper = new DBHelper(this);
 
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
 
@@ -47,15 +49,15 @@ public class LoginActivity extends AppCompatActivity {
                 String passwordTyped = passwordInputL.getText().toString();
                 String passwordHash = CryptoHelper.hashPassword(passwordTyped);
 
-                String registerName = prefs.getString("name", null);
-                String registerPasswordHash = prefs.getString("passwordHash", null);
-                if (
-                        Objects.equals(name, registerName) && Objects.equals(passwordHash, registerPasswordHash)
-                ) {
+                if (dbHelper.validateLogin(name, passwordHash)) {
+                    prefs.edit().putBoolean("loggedIn", true).apply();
+
                     Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                    intent.putExtra("username", name);
                     startActivity(intent);
+                    finish();
                 } else {
-                    Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
                 }
             }
         });
