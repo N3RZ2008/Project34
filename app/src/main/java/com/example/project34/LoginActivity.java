@@ -49,8 +49,10 @@ public class LoginActivity extends AppCompatActivity {
                 String passwordTyped = passwordInputL.getText().toString();
                 String passwordHash = CryptoHelper.hashPassword(passwordTyped);
 
-                if (dbHelper.validateLogin(name, passwordHash)) {
+                int userId = dbHelper.validateLogin(name, passwordHash);
+                if (userId != -1) {
                     prefs.edit().putBoolean("loggedIn", true).apply();
+                    prefs.edit().putInt("userId", userId).apply();
 
                     Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                     intent.putExtra("username", name);

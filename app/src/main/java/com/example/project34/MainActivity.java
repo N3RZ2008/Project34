@@ -50,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "User registered successfully", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                         intent.putExtra("name", name);
-                        intent.putExtra("passwordHash", passwordHash);
                         startActivity(intent);
+                        finish();
                     } else {
                         Toast.makeText(MainActivity.this, "Error registering user!", Toast.LENGTH_SHORT).show();
                     }
@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
         loginButtonR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
             }

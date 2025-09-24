@@ -3,6 +3,8 @@ package com.example.project34;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -14,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 public class HomeActivity extends AppCompatActivity {
 
     TextView usernameDisplay;
+    Button addTransactionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +28,8 @@ public class HomeActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        addTransactionButton = findViewById(R.id.addTransactionButton);
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
 
         if (!prefs.getBoolean("loggedIn", false)) {
@@ -34,10 +39,16 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         usernameDisplay = findViewById(R.id.usernameDisplay);
-
         Intent intent = getIntent();
         String username = intent.getStringExtra("username");
-
         usernameDisplay.setText(username);
+
+        addTransactionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, TransactionEditActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
