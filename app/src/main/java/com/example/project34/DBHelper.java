@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "Project34.db";
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
 
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -19,11 +19,11 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE users (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "name TEXT UNIQUE," +
                 "passwordHash TEXT)");
         db.execSQL("CREATE TABLE transactions (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "user_id INTEGER," +
                 "type TEXT," +
                 "description TEXT," +
@@ -52,12 +52,12 @@ public class DBHelper extends SQLiteOpenHelper {
     public int validateLogin(String name, String passwordHash) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(
-                "SELECT id FROM users WHERE name = ? AND passwordHash = ?",
+                "SELECT _id FROM users WHERE name = ? AND passwordHash = ?",
                 new String[]{name, passwordHash}
         );
         try {
             if (cursor != null && cursor.moveToFirst()) {
-                return cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+                return cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
             }
             return -1;
         } finally {
@@ -68,7 +68,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public boolean userExists(String name) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(
-                "SELECT id FROM users WHERE name = ?",
+                "SELECT _id FROM users WHERE name = ?",
                 new String[]{name}
         );
         try {
@@ -99,7 +99,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public boolean deleteTransaction(int transactionId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int result = db.delete("transactions", "id = ?", new String[]{String.valueOf(transactionId)});
+        int result = db.delete("transactions", "_id = ?", new String[]{String.valueOf(transactionId)});
         return result > 0;
     }
 
@@ -112,7 +112,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put("date", date);
         values.put("category", category);
 
-        int result = db.update("transactions", values, "id = ?", new String[]{String.valueOf(transactionId)});
+        int result = db.update("transactions", values, "_id = ?", new String[]{String.valueOf(transactionId)});
         return result > 0;
     }
 }
