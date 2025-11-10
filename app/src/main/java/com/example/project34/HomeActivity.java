@@ -16,7 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 public class HomeActivity extends AppCompatActivity {
 
     TextView usernameDisplay;
-    Button addTransactionButton, transactionListButton;
+    Button addTransactionButton, transactionListButton, summaryButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +31,7 @@ public class HomeActivity extends AppCompatActivity {
 
         addTransactionButton = findViewById(R.id.addTransactionButton);
         transactionListButton = findViewById(R.id.transactionListButton);
+        summaryButton = findViewById(R.id.summaryButton);
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
 
         if (!prefs.getBoolean("loggedIn", false)) {
@@ -56,6 +57,14 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, ListActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        summaryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, SummaryActivity.class);
                 startActivity(intent);
             }
         });
